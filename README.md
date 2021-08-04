@@ -9,6 +9,11 @@ Projected Updates:
 - Channel points
 - Overlaying profile pictures onto memes
 
+### **v1.3 (2021-8-04)**
+
+Implemented Features:
+- Data is now stored on a Database, enabling settings on servers to remain even if the bot goes offline
+
 ### **v1.2 (2021-7-29)**
 
 Implemented Features:

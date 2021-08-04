@@ -43,8 +43,8 @@ client.on("message", msg => {
   }
 
   //Set home
-  if (msg.content === "~set home" || (msg.content === "~set h")) {      
-    db.set(msg.guild.id, [msg.channel.id, null]).then(() => {
+  if (msg.content === "~set home" || (msg.content === "~set h")) {
+    db.set(msg.guild.id, [msg.channel.id, null, null]).then(() => {
       msg.channel.send("Streaming announcement channel set.");
     });
   }
@@ -54,14 +54,13 @@ client.on("message", msg => {
     
     db.get(msg.guild.id).then(value => { 
       if (msg.content.includes("~set role")){
-        db.set(msg.guild.id, [value[0], msg.content.substring(10, msg.content.length)]);
+        db.set(msg.guild.id, [value[0], msg.content.substring(10, msg.content.length),null]);
       }
       else {
         db.set(msg.guild.id, [value[0], msg.content.substring(7, 
-        msg.content.length)]);
+        msg.content.length),null]);
       }
     });
-    
     db.get(msg.guild.id).then(value => { 
       pr = value[1];
       if (pr == null || pr.toString().charAt('0') != '<'){
@@ -83,16 +82,22 @@ client.on("message", msg => {
   }
 
   //Dad mode
+   db.get(msg.guild.id).then(value => {
+    ch = value[0];
+    pr = value[1]; 
+    dm = value[2];
+
   if(msg.content==("~enable dm")){
-    dadMode[msg.guild.id] = true;
+    db.set(msg.guild.id,[ch,pr,true]);
     msg.channel.send("dadMode enabled");
   }
+
   if(msg.content==("~disable dm")){
-    dadMode[msg.guild.id] = false;
+    db.set(msg.guild.id,[ch,pr,false]);
     msg.channel.send("dadMode disabled");
   }
   
-  if(dadMode[msg.guild.id] == true){
+  if(dm == true){
     if(msg.content.toLowerCase().includes("i'm ")){
       msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("i'm")+4, msg.content.length)+ ", I am StreamLine bot");
     }
@@ -100,6 +105,8 @@ client.on("message", msg => {
       msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("im")+3, msg.content.length)+ ", I am StreamLine bot");
     }
   }
+
+   }); 
 })
 
 //detects if someone is streaming
