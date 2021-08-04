@@ -7,7 +7,7 @@ server.all("/", (req, res) => {
 })
 
 function refreshBot() {
-  server.listen(6000, () => {
+  server.listen(3000, () => {
     console.log("Server is ready.")
   })
 }
