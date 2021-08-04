@@ -7,8 +7,12 @@ StreamLine is a Discord bot developed to enhance the Discord streaming experienc
 Projected Updates:
 - Clipping and/or recording streams
 - Channel points
-- Polling feature
 - Overlaying profile pictures onto memes
+
+### **v1.2 (2021-7-29)**
+
+Implemented Features:
+- Spinner feature
 
 ### **v1.1 (2021-7-27)**
 
@@ -20,7 +24,7 @@ Fixed Bugs:
 - Bot no longer announces that a stream is live when a user leaves the voice call without ending their stream
 - Bot can now operate in multiple servers simultaneously
 - Bot now requests the proper permissions upon joining a server
-- If no System channel is available Bot will message in the next available channel
+- If no system channel is available bot will message in the next available channel
 - Fixed a bug where unmuting/muting while streaming caused the bot to announce a stream
 
 ### **v1.0 (2021-7-26)**
