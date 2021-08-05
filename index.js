@@ -14,7 +14,7 @@ client.on("ready", () => {
 })
 
 client.on("guildCreate", guild => {
-  output = ("Thanks for inviting me, use `~h` for a list of my commands");
+  output = ("Thanks for inviting me, use `~h` for a list of my commands.");
   if (guild.systemChannel != null) {
     guild.systemChannel.send(output);
   }
