@@ -83,29 +83,28 @@ client.on("message", msg => {
   //Dad mode
   if(msg.guild != null){
      db.get(msg.guild.id).then(value => {
-    ch = value[0];
-    pr = value[1]; 
-    dm = value[2];
+      ch = value[0];
+      pr = value[1]; 
+      dm = value[2];
 
-  if(msg.content==("~enable dm")){
-    db.set(msg.guild.id,[ch,pr,true]);
-    msg.channel.send("dadMode enabled");
-  }
+    if(msg.content==("~enable dm")){
+      db.set(msg.guild.id,[ch,pr,true]);
+      msg.channel.send("dadMode enabled");
+    }
 
-  if(msg.content==("~disable dm")){
-    db.set(msg.guild.id,[ch,pr,false]);
-    msg.channel.send("dadMode disabled");
-  }
+    if(msg.content==("~disable dm")){
+      db.set(msg.guild.id,[ch,pr,false]);
+      msg.channel.send("dadMode disabled");
+    }
   
-  if(dm == true){
-    if(msg.content.toLowerCase().includes("i'm ")){
-      msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("i'm")+4, msg.content.length)+ ", I am StreamLine bot");
+    if(dm == true){
+      if(msg.content.toLowerCase().includes("i'm ")){
+        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("i'm")+4, msg.content.length)+ ", I am StreamLine bot");
+      }
+      if(msg.content.toLowerCase().includes("im ")){
+        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("im")+3, msg.content.length)+ ", I am StreamLine bot");
+      }
     }
-    if(msg.content.toLowerCase().includes("im ")){
-      msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("im")+3, msg.content.length)+ ", I am StreamLine bot");
-    }
-  }
-
    }); 
   }
 })
@@ -116,7 +115,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState === newState){
       return;
     }
-
     if (newState.streaming && (newState.channel != null) && !oldState.streaming) {
       db.get(newState.guild.id).then(value => {
         ch = value[0];
