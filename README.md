@@ -11,19 +11,18 @@ Projected Updates:
 
 ### **v1.3 (2021-8-04)**
 
-Implemented Features:
+Bug Fix:
 - Data is now stored on a Database, enabling settings on servers to remain even if the bot goes offline
 
 ### **v1.2 (2021-7-29)**
 
 Implemented Features:
-- Spinner feature
+- Spinner command `~spinner`
 
 ### **v1.1 (2021-7-27)**
 
 Implemented Features:
-- Dad mode for entertainment purposes
-- Secret Tabletop server shenanigans
+- Dad mode command `~enable dm/~disable dm`
 
 Fixed Bugs:
 - Bot no longer announces that a stream is live when a user leaves the voice call without ending their stream
