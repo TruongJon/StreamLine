@@ -79,7 +79,6 @@ client.on("message", msg => {
     msg.channel.send(entries[selectedOption]);
   }
 
-  
   //Dad mode
   if(msg.guild != null){
      db.get(msg.guild.id).then(value => {
