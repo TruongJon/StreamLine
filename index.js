@@ -9,14 +9,13 @@ var channel = {};
 var pingrole = {};
 var dadMode = {};
 
-
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 })
 
 client.on("guildCreate", guild => {
 
-  output = ("Thanks for inviting me, use `~h` for a list of my commands");
+  output = ("Thanks for inviting me, use `~h` for a list of my commands.");
   if (guild.systemChannel != null) {
     guild.systemChannel.send(output);
   }
