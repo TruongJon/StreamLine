@@ -9,13 +9,11 @@ var channel = {};
 var pingrole = {};
 var dadMode = {};
 
-
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 })
 
 client.on("guildCreate", guild => {
-
   output = ("Thanks for inviting me, use `~h` for a list of my commands");
   if (guild.systemChannel != null) {
     guild.systemChannel.send(output);
@@ -39,7 +37,7 @@ client.on("message", msg => {
   //Help command
   if (msg.content === "~help" || (msg.content === "~h")) {  
     msg.author.send(
-    "Supported Commands" + "\n" + "All StreamLine bot commands will be prefixed with a tilde (~)." + "\n" + "`~set home/~set h` - designates the channel that streaming announcements will be posted in." + "\n" + "`~set role/~set r` - designates the user role that will be pinged during announcements." + "\n" + "A role argument is required. `Example: ~set role @Subscribers`");
+    "All StreamLine bot commands will be prefixed with a tilde (~)."+ "\n" + "** Stream Commands**" + "\n" + "`~set home/~set h` - designates the channel that streaming announcements will be posted in." + "\n" + "`~set role/~set r`" + "- designates the user role that will be pinged during announcements." + "\n" + "-A role argument is required." + "\n" + "- Example: *~set role @Subscribers*" + "\n" + "**Fun Commands**" + "\n" + "`~spinner` - randomly selects from the provided options." + "\n" + "-At least one argument is required, although 2 or more arguments are suggested." + "\n" + "- Example: *~spinner Red Blue Green*" + "\n" + "`~enable dm` - enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains \"im\" or \"i'm\")." + "\n" +" `~disable dm` - disables StreamLine's dad mode");
   }
 
   //Set home
@@ -81,8 +79,10 @@ client.on("message", msg => {
     msg.channel.send(entries[selectedOption]);
   }
 
+  
   //Dad mode
-   db.get(msg.guild.id).then(value => {
+  if(msg.guild != null){
+     db.get(msg.guild.id).then(value => {
     ch = value[0];
     pr = value[1]; 
     dm = value[2];
@@ -107,6 +107,7 @@ client.on("message", msg => {
   }
 
    }); 
+  }
 })
 
 //detects if someone is streaming
