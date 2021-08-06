@@ -123,7 +123,6 @@ client.on("message", msg => {
     });
   }
 
-  //msg.channel.send("this is a test", {files: ['Chat.mp3']});    
   function deleteMp3(){
     fs.unlink(filename, function(err){
         if (err) throw err;
