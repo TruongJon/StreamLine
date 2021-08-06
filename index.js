@@ -37,7 +37,7 @@ client.on("message", msg => {
   //Help command
   if (msg.content === "~help" || (msg.content === "~h")) {  
     msg.author.send(
-    "All StreamLine bot commands will be prefixed with a tilde (~)."+ "\n" + "** Stream Commands**" + "\n" + "`~set home/~set h` - designates the channel that streaming announcements will be posted in." + "\n" + "`~set role/~set r`" + "- designates the user role that will be pinged during announcements." + "\n" + "-A role argument is required." + "\n" + "- Example: *~set role @Subscribers*" + "\n" + "**Fun Commands**" + "\n" + "`~spinner` - randomly selects from the provided options." + "\n" + "-At least one argument is required, although 2 or more arguments are suggested." + "\n" + "- Example: *~spinner Red Blue Green*" + "\n" + "`~enable dm` - enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains \"im\" or \"i'm\")." + "\n" +" `~disable dm` - disables StreamLine's dad mode");
+    "**StreamLine Commands**" + "\n" + "All StreamLine bot commands will be prefixed with a tilde (~)."+ "\n" + "** Stream Commands**" + "\n" + "`~set home/~set h` - designates the channel that streaming announcements will be posted in." + "\n" + "`~set role/~set r`" + "- designates the user role that will be pinged during announcements." + "\n" + "-A role argument is required." + "\n" + "- Example: *~set role @Subscribers*" + "\n" + "**Fun Commands**" + "\n" + "`~spinner` - randomly selects from the provided options." + "\n" + "-At least one argument is required, although 2 or more arguments are suggested." + "\n" + "- Example: *~spinner Red Blue Green*" + "\n" + "`~enable dm` - enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains \"im\" or \"i'm\")." + "\n" +" `~disable dm` - disables StreamLine's dad mode");
   }
 
   //Set home
@@ -73,9 +73,15 @@ client.on("message", msg => {
 
   //Joins the voice channel that the user is in
   if (msg.content === "~join") {
+    if(msg.member.voice.channel == undefined){
+      msg.channel.send("Please join a vc!");
+      return;
+    }
     try {
       msg.member.voice.channel.join()
-      .then(connection => {})
+      .then(connection => {
+        msg.channel.send(`Joined ${msg.member.voice.channel}!`)
+      })
     }
     catch(e){
     }
@@ -94,7 +100,7 @@ client.on("message", msg => {
   if (msg.content === "~leave") {
     try {
       msg.guild.voice.connection.disconnect();
-      deleteMp3();
+      //deleteMp3();
     }
     catch(e){
     }
@@ -104,6 +110,10 @@ client.on("message", msg => {
   if (msg.content.startsWith("~tts")) {
     if(msg.content.length < 5){
       msg.channel.send("invalid message!");
+      return;
+    }
+    if(msg.member.voice.channel == undefined){
+      msg.channel.send("Please join a vc!");
       return;
     }
     (async () =>{
@@ -168,11 +178,14 @@ client.on("message", msg => {
     }
   
     if(dm == true){
+      if(msg.author.bot){
+        return;
+      }
       if(msg.content.toLowerCase().includes("i'm ")){
-        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("i'm")+4, msg.content.length)+ ", I am StreamLine bot");
+        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("i'm")+4, msg.content.length)+ ", I'm StreamLine bot");
       }
       if(msg.content.toLowerCase().includes("im ")){
-        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("im")+3, msg.content.length)+ ", I am StreamLine bot");
+        msg.channel.send("Hi! " + msg.content.substring(msg.content.toLowerCase().search("im")+3, msg.content.length)+ ", I'm StreamLine bot");
       }
     }
    }); 
