@@ -9,6 +9,11 @@ Projected Updates:
 - Channel points
 - Overlaying profile pictures onto memes
 
+### **v1.4 (2021-8-06)**
+
+Implemented Features:
+- Added Text-to-Speech support in Voice chats `~tts`
+
 ### **v1.3 (2021-8-04)**
 
 Fixed Bugs:

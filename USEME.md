@@ -16,6 +16,10 @@ A role argument is required.
 
 - Example: *~set role @Subscribers*
 
+`~tts` - StreamLine will convert your text into speech in whatever voice chat you are in.
+
+- Example: *~tts *
+
 ### Fun Commands
 
 `~spinner` - randomly selects from the provided options.
