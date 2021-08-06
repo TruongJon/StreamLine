@@ -8,6 +8,7 @@ const db = new Database()
 const gTTS = require('gtts')
 
 var fs = require('fs');
+const ytdl = require('ytdl-core');
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -35,20 +36,20 @@ client.on("guildCreate", guild => {
 client.on("message", msg => {
 
   //Help command
-  if (msg.content === "~help" || (msg.content === "~h")) {  
+  if(msg.content === "~help" || (msg.content === "~h")) {  
     msg.author.send(
     "**StreamLine Commands**" + "\n" + "All StreamLine bot commands will be prefixed with a tilde (~)."+ "\n" + "** Stream Commands**" + "\n" + "`~set home/~set h` - designates the channel that streaming announcements will be posted in." + "\n" + "`~set role/~set r`" + "- designates the user role that will be pinged during announcements." + "\n" + "-A role argument is required." + "\n" + "- Example: *~set role @Subscribers*" + "\n" + "**Fun Commands**" + "\n" + "`~spinner` - randomly selects from the provided options." + "\n" + "-At least one argument is required, although 2 or more arguments are suggested." + "\n" + "- Example: *~spinner Red Blue Green*" + "\n" + "`~enable dm` - enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains \"im\" or \"i'm\")." + "\n" +" `~disable dm` - disables StreamLine's dad mode");
   }
 
   //Set home
-  if (msg.content === "~set home" || (msg.content === "~set h")) {
+  if(msg.content === "~set home" || (msg.content === "~set h")) {
     db.set(msg.guild.id, [msg.channel.id, null, null]).then(() => {
       msg.channel.send("Streaming announcement channel set.");
     });
   }
   
   //Set role
-  if (msg.content.startsWith("~set r ") || msg.content.startsWith("~set role")) {
+  if(msg.content.startsWith("~set r ") || msg.content.startsWith("~set role")) {
     
     db.get(msg.guild.id).then(value => { 
       if (msg.content.includes("~set role")){
@@ -72,7 +73,7 @@ client.on("message", msg => {
   }
 
   //Joins the voice channel that the user is in
-  if (msg.content === "~join") {
+  if(msg.content === "~join") {
     if(msg.member.voice.channel == undefined){
       msg.channel.send("Please join a vc!");
       return;
@@ -97,7 +98,7 @@ client.on("message", msg => {
   //   })
   // }
 
-  if (msg.content === "~leave") {
+  if(msg.content === "~leave") {
     try {
       msg.guild.voice.connection.disconnect();
       //deleteMp3();
@@ -107,7 +108,7 @@ client.on("message", msg => {
   }
 
   //Text to speech on the message
-  if (msg.content.startsWith("~tts")) {
+  if(msg.content.startsWith("~tts")) {
     if(msg.content.length < 5){
       msg.channel.send("invalid message!");
       return;
@@ -125,17 +126,22 @@ client.on("message", msg => {
 
   //Creates a sound file for the text to speech
   async function createMp3(){
-    var message = msg.content.substring(5, msg.content.length); 
+    try{
+      var message = msg.content.substring(5, msg.content.length); 
     gtts = new gTTS(message, 'en');
     filename = msg.guild.id.toString() + ".mp3";
     gtts.save(filename, ()=> {
       console.log("file created");
     });
+    }
+    catch(e){
+      msg.channel.send("woah woah, slow down there!");
+    }
   }
 
   function deleteMp3(){
     fs.unlink(filename, function(err){
-        if (err) throw err;
+        if (err) msg.channel.send("woah woah slow down there! Too many messages!");
         console.log("file deleted");
       });
   }
@@ -151,6 +157,36 @@ client.on("message", msg => {
       });   
     })
   }
+
+  if(msg.content.startsWith("~stream")){
+    link = msg.content.split(" ")[1];
+    msg.member.voice.channel.join()
+      .then(async connection => { 
+        stream = ytdl(link);
+        dispatcher = await connection.play(stream);
+        dispatcher.on("finish", () => {
+         connection.disconnect();
+      });   
+    })
+  }
+
+  if(msg.content.startsWith("~anisong")) {
+    fs.readFile('./res/Songs.txt', 'utf8', function(err, data) {
+    if (err) throw err;
+      numSongs = data.split("\n").length;
+      songNumber = Math.floor(Math.random() * numSongs);
+      msg.member.voice.channel.join()
+      .then(async connection => { 
+        link = data.split("\n")[songNumber];
+        anisong = ytdl(link);
+        dispatcher = await connection.play(anisong);
+        dispatcher.on("finish", () => {
+         connection.disconnect();
+      });   
+    })
+    });
+  }
+
   
   //Spinner command
   if(msg.content.startsWith("~spinner")) {
@@ -168,12 +204,12 @@ client.on("message", msg => {
       dm = value[2];
 
     if(msg.content==("~enable dm")){
-      db.set(msg.guild.id,[ch,pr,true]);
+      db.set(msg.guild.id,[ch, pr, true]);
       msg.channel.send("dadMode enabled");
     }
 
     if(msg.content==("~disable dm")){
-      db.set(msg.guild.id,[ch,pr,false]);
+      db.set(msg.guild.id,[ch, pr, false]);
       msg.channel.send("dadMode disabled");
     }
   
