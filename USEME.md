@@ -18,7 +18,7 @@ A role argument is required.
 
 `~tts` - StreamLine will convert your text into speech in whatever voice chat you are in.
 
-- Example: *~tts *
+- Example: *~tts sushi is an amazing food*
 
 ### Fun Commands
 
