@@ -75,10 +75,26 @@ client.on("message", msg => {
   if (msg.content === "~join") {
     try {
       msg.member.voice.channel.join()
-      .then(connection => { 
-        filename = msg.guild.id.toString() + ".mp3";
-        connection.play(filename);
-      })
+      .then(connection => {})
+    }
+    catch(e){
+    }
+  }
+
+  // if (msg.content === "~tts stop") {
+  //  msg.member.voice.channel.join()
+  //     .then(async connection => { 
+  //   gtts = new gTTS(' ', 'en');
+  //   filename = msg.guild.id.toString() + ".mp3";
+  //   gtts.save(filename, ()=> {
+  //   });
+  //   })
+  // }
+
+  if (msg.content === "~leave") {
+    try {
+      msg.guild.voice.connection.disconnect();
+      deleteMp3();
     }
     catch(e){
     }
@@ -86,21 +102,27 @@ client.on("message", msg => {
 
   //Text to speech on the message
   if (msg.content.startsWith("~tts")) {
-    (async ()=>{
-      createMp3();
-      speak();
+    if(msg.content.length < 5){
+      msg.channel.send("invalid message!");
+      return;
+    }
+    (async () =>{
+       createMp3();
+       await new Promise(resolve => setTimeout(resolve, 500));
+       speak();
     })()
   }
 
   //Creates a sound file for the text to speech
-  function createMp3(){
+  async function createMp3(){
     var message = msg.content.substring(5, msg.content.length); 
     gtts = new gTTS(message, 'en');
     filename = msg.guild.id.toString() + ".mp3";
-    gtts.save(filename, (x)=> {
+    gtts.save(filename, ()=> {
       console.log("file created");
     });
   }
+
   //msg.channel.send("this is a test", {files: ['Chat.mp3']});    
   function deleteMp3(){
     fs.unlink(filename, function(err){
@@ -108,6 +130,7 @@ client.on("message", msg => {
         console.log("file deleted");
       });
   }
+  
   async function speak(){
      msg.member.voice.channel.join()
       .then(async connection => { 
@@ -116,7 +139,6 @@ client.on("message", msg => {
         dispatcher = await connection.play(filename);
         dispatcher.on("finish", () => {
          deleteMp3();
-         //connection.disconnect();
       });   
     })
   }
