@@ -5,9 +5,9 @@ const refreshBot = require("./server")
 const Database = require("@replit/database")
 const db = new Database()
 
-var channel = {};
-var pingrole = {};
-var dadMode = {};
+const gTTS = require('gtts')
+
+var fs = require('fs');
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -31,7 +31,7 @@ client.on("guildCreate", guild => {
   }
 })
 
-//help command
+//Bot commands
 client.on("message", msg => {
 
   //Help command
@@ -71,6 +71,56 @@ client.on("message", msg => {
     })
   }
 
+  //Joins the voice channel that the user is in
+  if (msg.content === "~join") {
+    try {
+      msg.member.voice.channel.join()
+      .then(connection => { 
+        filename = msg.guild.id.toString() + ".mp3";
+        connection.play(filename);
+      })
+    }
+    catch(e){
+    }
+  }
+
+  //Text to speech on the message
+  if (msg.content.startsWith("~tts")) {
+    (async ()=>{
+      createMp3();
+      speak();
+    })()
+  }
+
+  //Creates a sound file for the text to speech
+  function createMp3(){
+    var message = msg.content.substring(5, msg.content.length); 
+    gtts = new gTTS(message, 'en');
+    filename = msg.guild.id.toString() + ".mp3";
+    gtts.save(filename, (x)=> {
+      console.log("file created");
+    });
+  }
+  //msg.channel.send("this is a test", {files: ['Chat.mp3']});    
+  function deleteMp3(){
+    fs.unlink(filename, function(err){
+        if (err) throw err;
+        console.log("file deleted");
+      });
+  }
+  async function speak(){
+     msg.member.voice.channel.join()
+      .then(async connection => { 
+        console.log("Connected");
+        filename = msg.guild.id.toString() + ".mp3";
+        dispatcher = await connection.play(filename);
+        dispatcher.on("finish", () => {
+         deleteMp3();
+         //connection.disconnect();
+      });   
+    })
+  }
+  
   //Spinner command
   if(msg.content.startsWith("~spinner")) {
     entries = msg.content.substring(9, msg.content.length).split(" ");
@@ -108,7 +158,7 @@ client.on("message", msg => {
   }
 })
 
-//detects if someone is streaming
+//Detects if someone is streaming
 client.on('voiceStateUpdate', (oldState, newState) => {
   try {
     if (oldState === newState){
