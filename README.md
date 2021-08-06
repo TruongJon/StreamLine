@@ -9,6 +9,11 @@ Projected Updates:
 - Channel points
 - Overlaying profile pictures onto memes
 
+### **v1.4 (2021-8-06)**
+
+New:
+- 
+
 ### **v1.3 (2021-8-04)**
 
 Fixed Bugs:
