@@ -11,7 +11,7 @@ Projected Updates:
 
 ### **v1.3 (2021-8-04)**
 
-Bug Fix:
+Fixed Bugs:
 - Data is now stored on a Database, enabling settings on servers to remain even if the bot goes offline
 
 ### **v1.2 (2021-7-29)**
