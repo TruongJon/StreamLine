@@ -187,6 +187,9 @@ client.on("message", msg => {
 
     collector.on('end', collected => {
       msg.channel.send("Ran out of time. Please try again.");
+      if(msg.member.voice.channel == null || msg.member.voice.channel == undefined ){
+        return;
+      }
        msg.member.voice.channel.join()
       .then(async connection => {
         connection.disconnect();
