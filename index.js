@@ -10,6 +10,8 @@ const gTTS = require('gtts')
 var fs = require('fs');
 const ytdl = require('ytdl-core');
 
+var music = {};
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
 })
@@ -171,23 +173,51 @@ client.on("message", msg => {
   }
 
   if(msg.content.startsWith("~anisong")) {
-    fs.readFile('./res/Songs.txt', 'utf8', function(err, data) {
-    if (err) throw err;
-      numSongs = data.split("\n").length;
-      songNumber = Math.floor(Math.random() * numSongs);
-      msg.member.voice.channel.join()
-      .then(async connection => { 
-        link = data.split("\n")[songNumber];
-        anisong = ytdl(link);
-        dispatcher = await connection.play(anisong);
-        dispatcher.on("finish", () => {
-         connection.disconnect();
-      });   
-    })
+    queueAnisong();
+    const filter = m => m.content != "";
+    var collector = msg.channel.createMessageCollector(filter,{ time: 30000});
+    collector.on('collect', m => {
+      if(name.includes(m.content.toLowerCase())){
+        console.log(m.content);
+        m.channel.send("Correct");
+        collector.resetTimer();
+        queueAnisong();
+      }
+    });
+
+    collector.on('end', collected => {
+      msg.channel.send("Ran out of time. Please try again.");
+       msg.member.voice.channel.join()
+      .then(async connection => {
+        connection.disconnect();
+      })
     });
   }
 
-  
+  function queueAnisong(){
+    fs.readFile('./res/Songs.txt', 'utf8', function(err, songs) {
+    if (err) throw err;
+      fs.readFile('./res/AudioTitle.txt', 'utf8', function(err, titles) {
+        if (err) throw err;
+        numSongs = songs.split("\n").length;
+        songNumber = Math.floor(Math.random() * numSongs);
+         msg.member.voice.channel.join()
+        .then(async connection => { 
+          link = songs.split("\n")[songNumber];
+          name = titles.split("$")[songNumber].split(" / ");
+          for(i = 0; i < name.length; i++){
+            name[i] = name[i].replace("\n","");
+            name[i] = name[i].trim();
+          }
+          console.log(name +` ${songNumber}`);
+          //console.log(link);
+          anisong = ytdl(link,{filter: 'audioonly' });
+          dispatcher = connection.play(anisong);
+        })
+      })
+    })
+  }
+
   //Spinner command
   if(msg.content.startsWith("~spinner")) {
     entries = msg.content.substring(9, msg.content.length).split(" ");
