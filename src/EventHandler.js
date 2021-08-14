@@ -112,31 +112,62 @@ function eventHandler(client) {
           description:
             "**StreamLine Commands**" +
             "\n" +
-            "All StreamLine bot commands will be prefixed with a tilde (~)." +
+            "All StreamLine bot commands are prefixed with a tilde (~)." +
             "\n" +
             "** Stream Commands**" +
             "\n" +
-            "`~set home/~set h` - designates the channel that streaming announcements will be posted in." +
+            "`~set home/~set h` - Designate the current channel as the channel that streaming announcements will be posted in." +
             "\n" +
-            "`~set role/~set r`" +
-            "- designates the user role that will be pinged during announcements." +
+            "`~set role/~set r` - Designate the user role that will be pinged during announcements." +
             "\n" +
-            "-A role argument is required." +
+            "- A role argument is required." +
             "\n" +
             "- Example: *~set role @Subscribers*" +
             "\n" +
+            "`~join` - StreamLine will join the voice channel that the user is in" +
+            "\n" +
+            "`~leave` - StreamLine will leave the voice channel." +
+            "\n" +
+            "`~tts` - StreamLine will convert your text into speech in the voice channel that the user is in." +
+            "\n" +
+            "- Example: *~tts sushi is an amazing food*" +
+            "\n" +
+            "**Music Commands**" +
+            "\n" +
+            "`~play/~p` - Plays a song or add a song to the queue." +
+            "\n" +
+            "- A URL argument is required." +
+            "\n" +
+            "- Example: *~play https://youtu.be/g1p5eNOsl7I*" +
+            "\n" +
+            "`~remove/~r` - Skips the currently playing song." +
+            "\n" +
+            "`~queue/~q` - Displays the current queue." +
+            "\n" +
+            "`~remove/~r` - Removes a song from the queue." +
+            "\n" +
+            "- An integer argument is required, representing the queue number." +
+            "\n" +
+            "- Examples: *~remove 3*" +
+            "\n" +
+            "`~clear/~c`- Clears the entire queue." +
+            "\n" +
+            "`~stop`- Stops the current audio." +
+            "\n" +
             "**Fun Commands**" +
             "\n" +
-            "`~spinner` - randomly selects from the provided options." +
+            "`~anisong` - StreamLine will play a randomly selected anime or game songs. Users then guess the anime/game series or the song name itself in order to score points." +
             "\n" +
-            "-At least one argument is required, although 2 or more arguments are suggested." +
+            "`~spinner` - Randomly selects from the user provided options." +
+            "\n" +
+            "-At least one argument is required." +
             "\n" +
             "- Example: *~spinner Red Blue Green*" +
             "\n" +
-            '`~enable dm` - enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains "im" or "i\'m").' +
+            "`~enable dm` - Enables StreamLine to act like your very own dad (StreamLine will respond to every message that contains im or i'm with a dad joke.)." +
             "\n" +
-            " `~disable dm` - disables StreamLine's dad mode",
-        },
+            "`~disable dm` - Disables StreamLine's dad mode"
+        }
       });
     }
 
@@ -247,7 +278,6 @@ function eventHandler(client) {
         musicQueue[msg.guild.id] = [];
       }
       musicQueue[msg.guild.id].push(link);
-      console.log( musicQueue[msg.guild.id]);
       if(musicQueue[msg.guild.id].length == 1){
         musicPlayer();
       }
@@ -256,12 +286,9 @@ function eventHandler(client) {
 
     //Helper method to manage a queue of audio links.
     function musicPlayer(){
-      console.log(musicQueue[msg.guild.id]);
       msg.member.voice.channel.join().then(async (connection) => {
         if(connection.isPlaying)
         link = musicQueue[msg.guild.id][0];
-        console.log(musicQueue[msg.guild.id][0]);
-        console.log("the link is " + link);
         if(musicQueue[msg.guild.id][0] != link){
           link = musicQueue[msg.guild.id][0];
         }
@@ -374,8 +401,6 @@ function eventHandler(client) {
         answerCheck(m);
       });
       collector.on("end", (m) => {
-        console.log(answered[msg.guild.id].length);
-        console.log(players[msg.guild.id].length);
         if (answered[msg.guild.id].length != players[msg.guild.id].length) {
           animeName = name[msg.guild.id][0].split(" ");
           songName = name[msg.guild.id][name[msg.guild.id].length - 1].split(" ");
@@ -473,7 +498,6 @@ function eventHandler(client) {
       players[msg.guild.id].sort(function (a, b) {
         return b.score - a.score;
       });
-      console.log(players[msg.guild.id]);
       for (i = 0; i < players[msg.guild.id].length; i++) {
         str += `${players[msg.guild.id][i].name}: ${
           players[msg.guild.id][i].score

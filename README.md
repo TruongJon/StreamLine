@@ -7,7 +7,7 @@ StreamLine is a Discord bot developed to enhance the Discord streaming experienc
 ## Change Log
 
 Projected Updates:
-- Channel points
+- Settings for different variations of anisong
 - Overlaying profile pictures onto memes
 
 ### **v1.6 (2021-8-09)**
@@ -17,7 +17,7 @@ Implemented Features:
 - Added command to display the queue `~queue/~q`
 - Added command to remove a song in the queue `~remove/~r`
 - Added command to skip the currently play song `~skip/~s` 
-- Added command to clear the entire queue `~clear` 
+- Added command to clear the entire queue `~clear/~c` 
 - Added command to stop the current audio output `~stop` 
 - StreamLine now deletes user play commands after successfully adding the songs to the queue, preventing clutter.
 

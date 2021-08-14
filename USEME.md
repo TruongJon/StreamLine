@@ -42,7 +42,7 @@ All StreamLine bot commands are prefixed with a tilde (~).
 
 - Examples: *~remove 3*
 
-`~remove/~r`- Clears the entire queue.
+`~clear/~c`- Clears the entire queue.
 
 `~stop`- Stops the current audio.
 

@@ -3,11 +3,11 @@ const client = new Discord.Client()
 const refreshBot = require("./server")
 var eventHandler = require('./src/EventHandler')
 
-function settings(){
-  var timePerRound;
-  var blackList;
-  var whiteList;
-}
+// function settings(){
+//   var timePerRound;
+//   var blackList;
+//   var whiteList;
+// }
 
 eventHandler(client);
 refreshBot();
