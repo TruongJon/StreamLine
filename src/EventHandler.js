@@ -283,6 +283,16 @@ function eventHandler(client) {
         musicPlayer();
       }
       msg.delete();
+      (async () => {
+        title = await ytdl.getBasicInfo(link);
+        str = `${title.videoDetails.title}`;
+        msg.channel.send({
+        embed: {
+          color: 3447003,
+          description: `added song [${str}](${link}) to position ${musicQueue[msg.guild.id].length} in queue`,
+          },
+        });
+      })();
     }
 
     //Helper method to manage a queue of audio links.
@@ -295,6 +305,14 @@ function eventHandler(client) {
         }
         stream = ytdl(link, { filter: "audioonly" });
         dispatcher = await connection.play(stream);
+        title = await ytdl.getBasicInfo(musicQueue[msg.guild.id][0]);
+        str = `Currently playing : ${title.videoDetails.title} `;
+        msg.channel.send({
+        embed: {
+          color: 3447003,
+          description: `${str}`,
+          },
+        });
         dispatcher.on("finish", () => {
           musicQueue[msg.guild.id].shift();
           if(musicQueue[msg.guild.id].length == 0){
@@ -359,6 +377,9 @@ function eventHandler(client) {
           msg.channel.send(`Song at position ${msg.content.split(" ")[1]} removed.`);
           if(msg.content.split(" ")[1] == 1 && msg.guild.voice.channel){
             vcUtils.songEnd(msg);
+            if(musicQueue[msg.guild.id] != undefined && musicQueue[msg.guild.id].length > 0){
+              musicPlayer();
+            }
           }
         }
         else{
