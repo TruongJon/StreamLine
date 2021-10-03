@@ -260,6 +260,7 @@ function eventHandler(client) {
         msg.channel.send("Please join a vc!");
         return;
       }
+      clearInterval(intervals[msg.guild.id]);
       link = msg.content.split(" ")[1];
        if(link == undefined){
         if(musicQueue[msg.guild.id].length > 0){
@@ -350,7 +351,7 @@ function eventHandler(client) {
       }
       try{
         if(!isNaN(msg.content.split(" ")[1])){
-          if(msg.content.split(" ")[1] < 2 || msg.content.split(" ")[1] > musicQueue[msg.guild.id].length){
+          if(msg.content.split(" ")[1] < 1 || msg.content.split(" ")[1] > musicQueue[msg.guild.id].length){
             msg.channel.send("Not a valid song number!");
             return;
           }
@@ -379,6 +380,9 @@ function eventHandler(client) {
     Play a voice channel game where a randomly selected anime or game song is played. Users may then either guess the series origin or the song name itself to score points.
     */
     if (msg.content.startsWith("~anisong")) {
+      if(musicQueue[msg.guild.id] != undefined && musicQueue[msg.guild.id].length > 0){
+        msg.channel.send("Queue paused! beginning Anisong!")
+      }
       clearInterval(intervals[msg.guild.id]);
       players[msg.guild.id] = [];
       noRepeats[msg.guild.id] = [];
@@ -401,7 +405,7 @@ function eventHandler(client) {
         answerCheck(m);
       });
       collector.on("end", (m) => {
-        if (answered[msg.guild.id].length != players[msg.guild.id].length) {
+        if (answered[msg.guild.id].length != players[msg.guild.id].length || answered[msg.guild.id].length == 0) {
           animeName = name[msg.guild.id][0].split(" ");
           songName = name[msg.guild.id][name[msg.guild.id].length - 1].split(" ");
           msg.channel.send({
