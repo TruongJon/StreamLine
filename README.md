@@ -10,6 +10,20 @@ Projected Updates:
 - Settings for different variations of anisong
 - Overlaying profile pictures onto memes
 
+### **v1.6.1 (2021-10-03)**
+
+Implemented Features:
+- Bot now responds to user adding songs to queue
+- Song names are now hyperlinked to respective youtube videos
+- Song details are now displayed whenever a song plays
+- Streamline now displays how many servers it is in
+Fixed Bugs:
+- Users can now remove the first song in queue using `~remove`
+- Anisong song name now appears even if users don't guess on the first song
+- Anisong now stops playing whenever a play command is used
+- Music queue is paused whenever an Anisong game is initiated
+- If bot is kicked from VC without using commands Anisong will stop correctly
+
 ### **v1.6 (2021-8-09)**
 
 Implemented Features:

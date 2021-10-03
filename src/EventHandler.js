@@ -19,7 +19,7 @@ var noRepeats = [];
 var points = [];
 var name = {};
 var musicQueue = [];
-    
+var aniSong = [];
 function player(name, score) {
   this.name = name;
   this.score = score;
@@ -30,10 +30,17 @@ function player(name, score) {
   };
 }    
 
+// function settings(){
+//   var timePerRound;
+//   var blackList;
+//   var whiteList;
+// }
+
 function eventHandler(client) {
 
   client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    client.user.setActivity(`Currently in ${client.guilds.cache.size} servers`)
   });
 
   //Sends instructions upon joining a guild
@@ -233,7 +240,9 @@ function eventHandler(client) {
     if (msg.content === "~leave") {
       try {
         clearInterval(intervals[msg.guild.id]);
+        aniSong[msg.guild.id] = false;
         msg.guild.voice.connection.disconnect();
+        msg.channel.send("Disconnected from VC!")
       } catch (e) {}
     }
 
@@ -256,6 +265,10 @@ function eventHandler(client) {
 
     //Plays the audio of a specified Youtube video link in the voice channel that the user that used the command is in, then leaves after the audio has completed.
     if (msg.content.startsWith("~play")|| msg.content.split(" ")[0] == "~p") {
+      if(aniSong[msg.guild.id] != undefined && aniSong[msg.guild.id] == true){
+        msg.channel.send("Anisong game in progress! Please leave the current game before playing music.")
+        return;
+      }
       if (msg.member.voice.channel == undefined) {
         msg.channel.send("Please join a vc!");
         return;
@@ -306,7 +319,7 @@ function eventHandler(client) {
         stream = ytdl(link, { filter: "audioonly" });
         dispatcher = await connection.play(stream);
         title = await ytdl.getBasicInfo(musicQueue[msg.guild.id][0]);
-        str = `Currently playing : ${title.videoDetails.title} `;
+        str = `Currently playing : [${title.videoDetails.title}](${musicQueue[msg.guild.id][0]}) `;
         msg.channel.send({
         embed: {
           color: 3447003,
@@ -322,6 +335,11 @@ function eventHandler(client) {
             musicPlayer();
           }
         });
+        connection.on("disconnect", () =>{
+          aniSong[msg.guild.id] = false;
+          clearInterval(intervals[msg.guild.id]);
+          msg.channel.send("Disconnected from VC!");
+        })
       });
     }
 
@@ -336,7 +354,7 @@ function eventHandler(client) {
           str = 'Current Queue:';
           for(i = 0; i < musicQueue[msg.guild.id].length;i++){
           title = await ytdl.getBasicInfo(musicQueue[msg.guild.id][i]);
-          str += `\n${i+1}. ${title.videoDetails.title} `;
+          str += `\n${i+1}. [${title.videoDetails.title}](${musicQueue[msg.guild.id][i]}) `;
           }
         msg.channel.send({
         embed: {
@@ -353,8 +371,16 @@ function eventHandler(client) {
 
     //Skips the current playing song.
     if (msg.content === "~skip" || msg.content === "~s") {
+       if(aniSong[msg.guild.id] != undefined && aniSong[msg.guild.id] == true){
+        msg.channel.send("Anisong game in progress! Please leave the current game before skipping.")
+        return;
+      }
+      if(musicQueue[msg.guild.id] == undefined || musicQueue[msg.guild.id].length < 1){
+        msg.channel.send("Queue is empty!")
+        return;
+      }
       musicQueue[msg.guild.id].shift();
-      if( musicQueue[msg.guild.id].length == 0){
+      if(musicQueue[msg.guild.id].length == 0){
         vcUtils.songEnd(msg); 
         return;
       }
@@ -397,6 +423,12 @@ function eventHandler(client) {
       vcUtils.songEnd(msg);
     }
 
+    
+  client.on("voice", () =>{
+    msg.channel.send("you're bad")
+    aniSong[msg.guild.id] = false;
+  })
+
     /*
     Play a voice channel game where a randomly selected anime or game song is played. Users may then either guess the series origin or the song name itself to score points.
     */
@@ -409,6 +441,7 @@ function eventHandler(client) {
       noRepeats[msg.guild.id] = [];
       answered[msg.guild.id] = [];
       points[msg.guild.id] = 5;
+      aniSong[msg.guild.id] = true;
       gameTime();
       intervals[msg.guild.id] = setInterval(gameTime, 30000);
     }
@@ -470,6 +503,13 @@ function eventHandler(client) {
             console.log(name + ` ${songNumber}`);
             anisong = ytdl(link, { filter: "audioonly" });
             dispatcher = connection.play(anisong);
+            connection.on("disconnect", () =>{
+              if(aniSong[msg.guild.id] == true){
+                aniSong[msg.guild.id] = false;
+                clearInterval(intervals[msg.guild.id]);
+                msg.channel.send("Disconnected from VC!");
+              }
+            })
           });
           name[msg.guild.id] = name;
         });
@@ -539,6 +579,7 @@ function eventHandler(client) {
     //Stops the currently playing audio.
     if (msg.content.startsWith("~stop")) {
       clearInterval(intervals[msg.guild.id]);
+      aniSong[msg.guild.id] = false;
       vcUtils.songEnd(msg);
     }
 
